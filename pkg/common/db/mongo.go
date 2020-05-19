@@ -3,6 +3,8 @@ package db
 import (
 	"fmt"
 
+	"cmsgo/pkg/common/log"
+
 	"github.com/globalsign/mgo"
 	"github.com/spf13/viper"
 )
@@ -48,10 +50,10 @@ func SetUpMongo() {
 		}
 		sess, err := mgo.Dial(uri)
 		if err != nil {
-			fmt.Printf("Failed to connect mongodb %s\n", err.Error())
+			log.Fatal(fmt.Sprintf("Parse config file fail: %s", err.Error()))
 		}
 		Session = sess
 		//log.Info("Successfully connect to mongodb")
-		fmt.Println("Successfully connect to mongodb")
+		log.Debug("Successfully connect to mongodb")
 	}
 }

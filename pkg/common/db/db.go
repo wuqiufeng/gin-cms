@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"reflect"
 
+	"cmsgo/pkg/common/log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -22,9 +23,9 @@ func Setup() {
 	//log.Debug(conn)
 	db, err = gorm.Open("mysql", conn)
 	if err != nil {
-		fmt.Printf("Failed to connect database %s\n", err.Error())
+		log.Fatal(fmt.Sprintf("Failed to connect database %s", err.Error()))
+		//log.Fatal().Err(err).Msg("Failed to connect database")
 		return
-		//log.Fatal(fmt.Sprintf("Failed to connect database %s", err.Error()))
 	} else {
 		db.DB().SetMaxIdleConns(viper.GetInt("mysql.pool.min"))
 		db.DB().SetMaxOpenConns(viper.GetInt("mysql.pool.max"))
@@ -33,7 +34,7 @@ func Setup() {
 		}
 	}
 	//log.Info("Successfully connect to database")
-	fmt.Println("Successfully connect to database")
+	log.Debug("Successfully connect to database")
 }
 
 func SetGormDB(gdb *gorm.DB) {
@@ -69,11 +70,12 @@ func Register(model Model) {
 	modelList = append(modelList, model)
 }
 
-func AutoMigrate() error {
+func AutoMigrate() {
 	for _, model := range modelList {
 		if err := db.Debug().Set("gorm:table_options", "CHARSET=utf8mb4").AutoMigrate(model).Error; err != nil {
-			return errors.Wrap(err, "db auto migrate failed")
+			//return errors.Wrap(err, "db auto migrate failed")
+			log.Warn("db auto migrate failed")
+
 		}
 	}
-	return nil
 }

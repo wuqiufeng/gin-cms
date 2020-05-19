@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"cmsgo/pkg/common/log"
+
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 )
@@ -24,11 +26,11 @@ func (r Redis) Connect() {
 	})
 	_, err := r.client.Ping().Result()
 	if err != nil {
-		fmt.Printf("Could not connected to redis : %s\n", err.Error())
-		//log.Fatal(fmt.Sprintf("Could not connected to redis : %s", err.Error()))
+		log.Fatal(fmt.Sprintf("Could not connected to redis : %s", err.Error()))
+		//log.Fatal().Err(err).Msg("Failed to connect redis")
 	}
-	//log.Info("Successfully connected to redis")
-	fmt.Println("Successfully connected to redis")
+	log.Info("Successfully connected to redis")
+	//log.Print("Successfully connected to redis")
 }
 
 // Get from key
